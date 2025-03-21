@@ -1,26 +1,29 @@
-use cosmwasm_schema::{cw_serde, QueryResponses};
+use cosmwasm_std::{Addr, Uint128};
+use schemars::JsonSchema;
+use serde::{Deserialize, Serialize};
 
-#[cw_serde]
-pub struct InstantiateMsg {
-    pub count: i32,
-}
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct InstantiateMsg {}
 
-#[cw_serde]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
-    Increment {},
-    Reset { count: i32 },
-}
-
-#[cw_serde]
-#[derive(QueryResponses)]
-pub enum QueryMsg {
-    // GetCount returns the current count as a json-encoded number
-    #[returns(GetCountResponse)]
-    GetCount {},
-}
-
-// We define a custom struct for each query response
-#[cw_serde]
-pub struct GetCountResponse {
-    pub count: i32,
+    GiveGift {
+        recipient: String,  // Address of the recipient
+        amount: u128,
+        expiry: u64,
+    },
+    RedeemGift {
+        sender: String,  // Changed from Addr to String
+        amount: u128,
+        expiry: u64,
+        signature: String,
+    },
+    CreateWallet { 
+        email: String, 
+        wallet_address: Addr 
+    },
+    DepositFunds { 
+        amount: Uint128 
+    },
 }

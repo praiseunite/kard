@@ -1,0 +1,10 @@
+/contracts/kard
+ ├── src/
+ │   ├── contract.rs          # Handles execution logic (redeem, verify signature)
+ │   ├── msg.rs               # Defines messages & responses
+ │   ├── state.rs             # Stores claimed gifts
+ │   ├── error.rs             # Defines contract errors
+ │   ├── helpers.rs           # Utility functions (signature verification)
+ │   ├── Cargo.toml           # Dependencies
+ ├── schema/                  # Stores compiled schema files
+ ├── tests/                   # Integration tests

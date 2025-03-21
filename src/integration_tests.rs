@@ -1,78 +1,43 @@
-#[cfg(test)]
-mod tests {
-    use crate::helpers::CwTemplateContract;
-    use crate::msg::InstantiateMsg;
-    use cosmwasm_std::testing::MockApi;
-    use cosmwasm_std::{Addr, Coin, Empty, Uint128};
-    use cw_multi_test::{App, AppBuilder, Contract, ContractWrapper, Executor};
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
+//     use cosmwasm_std::{coins, Addr, Uint128, CosmosMsg, BankMsg};
 
-    pub fn contract_template() -> Box<dyn Contract<Empty>> {
-        let contract = ContractWrapper::new(
-            crate::contract::execute,
-            crate::contract::instantiate,
-            crate::contract::query,
-        );
-        Box::new(contract)
-    }
+//     #[test]
+//     fn test_redeem_gift() {
+//         let mut deps = mock_dependencies();
+//         let env = mock_env();
+//         let sender = "alice".to_string();
+//         let redeemer = Addr::unchecked("bob");
+//         let amount = 100_000u128;
+//         let expiry = env.block.time.seconds() + 3600; // 1 hour expiry
 
-    const USER: &str = "USER";
-    const ADMIN: &str = "ADMIN";
-    const NATIVE_DENOM: &str = "denom";
+//         // Simulate signing the message
+//         let message_hash = format!("{}:{}:{}", sender, amount, expiry);
+//         let signature = "valid_signature"; // Mock signature
 
-    fn mock_app() -> App {
-        AppBuilder::new().build(|router, _, storage| {
-            router
-                .bank
-                .init_balance(
-                    storage,
-                    &MockApi::default().addr_make(USER),
-                    vec![Coin {
-                        denom: NATIVE_DENOM.to_string(),
-                        amount: Uint128::new(1),
-                    }],
-                )
-                .unwrap();
-        })
-    }
+//         // Bob redeems the card
+//         let info = mock_info(&redeemer.to_string(), &[]);
+//         let res = redeem_gift(
+//             deps.as_mut(),
+//             env.clone(),
+//             info,
+//             sender.clone(),
+//             amount,
+//             expiry,
+//             signature.to_string(),
+//         );
+//         assert!(res.is_ok());
 
-    fn proper_instantiate() -> (App, CwTemplateContract) {
-        let mut app = mock_app();
-        let cw_template_id = app.store_code(contract_template());
-
-        let user = app.api().addr_make(USER);
-        assert_eq!(
-            app.wrap().query_balance(user, NATIVE_DENOM).unwrap().amount,
-            Uint128::new(1)
-        );
-
-        let msg = InstantiateMsg { count: 1i32 };
-        let cw_template_contract_addr = app
-            .instantiate_contract(
-                cw_template_id,
-                Addr::unchecked(ADMIN),
-                &msg,
-                &[],
-                "test",
-                None,
-            )
-            .unwrap();
-
-        let cw_template_contract = CwTemplateContract(cw_template_contract_addr);
-
-        (app, cw_template_contract)
-    }
-
-    mod count {
-        use super::*;
-        use crate::msg::ExecuteMsg;
-
-        #[test]
-        fn count() {
-            let (mut app, cw_template_contract) = proper_instantiate();
-
-            let msg = ExecuteMsg::Increment {};
-            let cosmos_msg = cw_template_contract.call(msg).unwrap();
-            app.execute(Addr::unchecked(USER), cosmos_msg).unwrap();
-        }
-    }
-}
+//         // Ensure Bob got the funds
+//         let bank_msg = res.unwrap().messages[0].msg.clone();
+//         match bank_msg {
+//             CosmosMsg::Bank(BankMsg::Send { to_address, amount }) => {
+//                 assert_eq!(to_address, redeemer.to_string());
+//                 assert_eq!(amount[0].amount, Uint128::new(100_000));
+//             }
+//             _ => panic!("Expected Bank Send Message"),
+//         }
+//     }
+// }
