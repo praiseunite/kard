@@ -128,6 +128,22 @@ impl Wallet {
     }
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub(crate) struct WalletVerification {
+    message: String,
+}
+
+impl WalletVerification {
+    pub(crate) fn new(message: String) -> Self {
+        Self { message }
+    }
+
+    // Add this getter method
+    pub(crate) fn message(&self) -> &str {
+        &self.message
+    }
+}
+
 pub(crate) const WALLETS: Map<Addr, Wallet> = Map::new("wallets");
 pub(crate) const EMAILS: Map<String, Addr> = Map::new("emails");
 pub(crate) const UNCLAIMED_GIFTS: Map<String, GiftCard> = Map::new("unclaimed_gifts");
