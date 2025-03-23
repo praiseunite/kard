@@ -21,6 +21,9 @@ jobs:
           target: wasm32-unknown-unknown
           override: true
 
+      - name: Set environment variables
+        run: echo "RUSTFLAGS=-C link-arg=-s" >> $GITHUB_ENV
+
       - name: Run unit tests
         uses: actions-rs/cargo@v1
         with:
@@ -32,8 +35,8 @@ jobs:
       - name: Compile WASM contract
         uses: actions-rs/cargo@v1
         with:
-          command: wasm
-          args: --locked
+          command: build --target wasm32-unknown-unknown --release
+          args: --locked  # we can check and remeove this line if it does not work.
         env:
           RUSTFLAGS: "-C link-arg=-s"
 
