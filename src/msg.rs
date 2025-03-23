@@ -14,29 +14,24 @@ pub enum ExecuteMsg {
         expiry: u64,
     },
     RedeemGift {
-        sender: String,  // Changed from Addr to String
+        sender: String, // Changed from Addr to String
         amount: u128,
         expiry: u64,
         signature: String,
     },
-    CreateWallet { 
-        email: String, 
-        wallet_address: Addr 
+    CreateWallet {
+        email: String,
+        wallet_address: Addr,
     },
-    DepositFunds { 
-        amount: Uint128 
+    DepositFunds {
+        amount: Uint128,
     },
 }
 
 #[cw_serde]
 pub enum QueryMsg {
-    GetWalletByEmail { 
-        email: String 
-    },
-    
-    ValidateWallet { 
-        address: Addr 
-    },
-    
+    GetWalletByEmail { email: String },
+
+    ValidateWallet { address: Addr },
     // You can add more query types here as needed
 }

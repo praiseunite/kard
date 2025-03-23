@@ -1,10 +1,9 @@
 // use secp256k1::{Message, PublicKey, Secp256k1, ecdsa::Signature};
-use sha2::{Digest, Sha256};
-use std::str::FromStr;
 use cosmwasm_std::{Addr, StdError, StdResult, Storage, Uint128};
+use sha2::Digest;
 
 // Use the existing storage mappings from the main contract
-use crate::state::{Wallet, EMAILS, WALLETS};  
+use crate::state::{Wallet, EMAILS, WALLETS};
 
 /// Saves a wallet address and email to storage
 pub fn save_wallet(
@@ -18,11 +17,7 @@ pub fn save_wallet(
     }
 
     // Initialize wallet with zero balance
-    let wallet = Wallet::new(
-        wallet_address.clone(),
-        email.clone(),
-        Uint128::zero(),
-    );
+    let wallet = Wallet::new(wallet_address.clone(), email.clone(), Uint128::zero());
 
     // Save the wallet and email mapping
     WALLETS.save(storage, wallet_address.clone(), &wallet)?;
@@ -43,8 +38,8 @@ pub fn save_wallet(
 //     let msg = Message::from_slice(&hashed_msg).map_err(|_| cosmwasm_std::StdError::generic_err("Invalid hash"))?;
 
 //     let sig = Signature::from_str(signature).map_err(|_| cosmwasm_std::StdError::generic_err("Invalid signature"))?;
-    
+
 //     let sender_pubkey = PublicKey::from_str(sender).map_err(|_| cosmwasm_std::StdError::generic_err("Invalid sender public key"))?;
-    
+
 //     Ok(secp.verify_ecdsa(&msg, &sig, &sender_pubkey).is_ok())
 // }

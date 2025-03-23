@@ -1,7 +1,7 @@
 use cosmwasm_std::{Addr, Uint128};
 use cw_storage_plus::Map;
-use serde::{Deserialize, Serialize};
 use schemars::JsonSchema;
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -31,7 +31,7 @@ impl GiftCard {
     pub(crate) fn new(name: String, sender: Addr, amount: u128, expiry: u64) -> Self {
         let gift_data = format!("{}:{}:{}", sender, amount, expiry);
         let hash = hex::encode(Sha256::digest(gift_data.as_bytes()));
-        
+
         Self {
             name,
             sender,
@@ -41,7 +41,7 @@ impl GiftCard {
             status: GiftStatus::Unclaimed,
         }
     }
-    
+
     pub(crate) fn name(&self) -> &str {
         &self.name
     }
@@ -49,19 +49,19 @@ impl GiftCard {
     pub(crate) fn sender(&self) -> &Addr {
         &self.sender
     }
-    
+
     pub(crate) fn amount(&self) -> u128 {
         self.amount
     }
-    
+
     pub(crate) fn expiry(&self) -> u64 {
         self.expiry
     }
-    
+
     pub(crate) fn hash(&self) -> &str {
         &self.hash
     }
-    
+
     pub(crate) fn status(&self) -> &GiftStatus {
         &self.status
     }
@@ -104,7 +104,11 @@ pub(crate) struct Wallet {
 
 impl Wallet {
     pub(crate) fn new(address: Addr, email: String, balance: Uint128) -> Self {
-        Self { address, email, balance }
+        Self {
+            address,
+            email,
+            balance,
+        }
     }
 
     pub(crate) fn address(&self) -> &Addr {
@@ -122,7 +126,7 @@ impl Wallet {
     pub(crate) fn credit(&mut self, amount: Uint128) {
         self.balance += amount;
     }
-    
+
     pub(crate) fn debit(&mut self, amount: Uint128) {
         self.balance -= amount;
     }
