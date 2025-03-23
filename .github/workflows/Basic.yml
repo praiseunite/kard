@@ -21,6 +21,9 @@ jobs:
           target: wasm32-unknown-unknown
           override: true
 
+      - name: Install wasm32-unknown-unknown target
+        run: rustup target add wasm32-unknown-unknown
+
       - name: Set environment variables
         run: echo "RUSTFLAGS=-C link-arg=-s" >> $GITHUB_ENV
 
@@ -33,10 +36,7 @@ jobs:
           RUST_BACKTRACE: 1
 
       - name: Compile WASM contract
-        uses: actions-rs/cargo@v1
-        with:
-          command: build --target wasm32-unknown-unknown --release
-          args: --locked  # we can check and remeove this line if it does not work.
+        run: cargo build --target wasm32-unknown-unknown --release
         env:
           RUSTFLAGS: "-C link-arg=-s"
 
