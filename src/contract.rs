@@ -2,12 +2,10 @@ use cosmwasm_std::{
     entry_point, to_json_binary, Addr, BankMsg, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128
 };
 use sha2::{Digest, Sha256};
-use rand::distr::Alphanumeric;
-use rand::Rng;
 use crate::error::AuthError;
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::state::{GiftCard, GiftStage, RedeemedGift, Wallet, WalletVerification, EMAILS, REDEEMED_GIFTS, UNCLAIMED_GIFTS, WALLETS};
-use crate::helpers::verify_signature;
+// use crate::helpers::verify_signature;
 use crate::ContractError;
 // use cosmwasm_crypto::secp256k1_verify;
 
@@ -139,15 +137,18 @@ pub fn query(
 
 //=======================
 // Function to generate a 36-character secure Gift ID
-pub fn generate_gift_id(_sender: &str, signature: &str) -> String {
-    let hash = Sha256::digest(signature.as_bytes());
-    let sig_part = hex::encode(hash)[14..20].to_string(); // Take characters 14-20
-    let random_part: String = rand::rng() // Changed from thread_rng to rng
-        .sample_iter(&Alphanumeric)
-        .take(30) // Ensure total 36 characters
-        .map(char::from)
-        .collect();
-    format!("{}{}", random_part, sig_part)
+pub fn generate_gift_id(sender: &str, signature: &str) -> String {
+    // Create a deterministic but unique ID based on inputs
+    let combined = format!("{}:{}", sender, signature);
+    let hash = Sha256::digest(combined.as_bytes());
+    let hex_hash = hex::encode(hash);
+    
+    // Take first 30 chars for the "random" part
+    let first_part = &hex_hash[0..30];
+    // Take chars 30-36 for the signature part
+    let sig_part = &hex_hash[30..36];
+    
+    format!("{}{}", first_part, sig_part)
 }
 //=======================
 

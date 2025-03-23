@@ -1,4 +1,4 @@
-use secp256k1::{Message, PublicKey, Secp256k1, ecdsa::Signature};
+// use secp256k1::{Message, PublicKey, Secp256k1, ecdsa::Signature};
 use sha2::{Digest, Sha256};
 use std::str::FromStr;
 use cosmwasm_std::{Addr, StdError, StdResult, Storage, Uint128};
@@ -31,20 +31,20 @@ pub fn save_wallet(
     Ok(())
 }
 
-pub fn verify_signature(
-    message_hash: &str,
-    signature: &str,
-    sender: &str,  // Changed Addr to &str
-) -> StdResult<bool> {
-    let secp = Secp256k1::new();
+// pub fn verify_signature(
+//     message_hash: &str,
+//     signature: &str,
+//     sender: &str,  // Changed Addr to &str
+// ) -> StdResult<bool> {
+//     let secp = Secp256k1::new();
 
-    // Hash message
-    let hashed_msg = Sha256::digest(message_hash.as_bytes());
-    let msg = Message::from_slice(&hashed_msg).map_err(|_| cosmwasm_std::StdError::generic_err("Invalid hash"))?;
+//     // Hash message
+//     let hashed_msg = Sha256::digest(message_hash.as_bytes());
+//     let msg = Message::from_slice(&hashed_msg).map_err(|_| cosmwasm_std::StdError::generic_err("Invalid hash"))?;
 
-    let sig = Signature::from_str(signature).map_err(|_| cosmwasm_std::StdError::generic_err("Invalid signature"))?;
+//     let sig = Signature::from_str(signature).map_err(|_| cosmwasm_std::StdError::generic_err("Invalid signature"))?;
     
-    let sender_pubkey = PublicKey::from_str(sender).map_err(|_| cosmwasm_std::StdError::generic_err("Invalid sender public key"))?;
+//     let sender_pubkey = PublicKey::from_str(sender).map_err(|_| cosmwasm_std::StdError::generic_err("Invalid sender public key"))?;
     
-    Ok(secp.verify_ecdsa(&msg, &sig, &sender_pubkey).is_ok())
-}
+//     Ok(secp.verify_ecdsa(&msg, &sig, &sender_pubkey).is_ok())
+// }
