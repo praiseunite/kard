@@ -21,7 +21,7 @@ jobs:
           target: wasm32-unknown-unknown
           override: true
 
-      - name: Install wasm32-unknown-unknown target
+      - name: Install WebAssembly target
         run: rustup target add wasm32-unknown-unknown
 
       - name: Set environment variables
@@ -31,14 +31,22 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
-          # args: --locked
         env:
           RUST_BACKTRACE: 1
 
       - name: Compile WASM contract
-        run: cargo build --target wasm32-unknown-unknown --release
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --target wasm32-unknown-unknown --release --locked
         env:
           RUSTFLAGS: "-C link-arg=-s"
+
+      - name: Build for WebAssembly
+        run: cargo build --target wasm32-unknown-unknown
+
+      - name: Run tests
+        run: cargo test --target wasm32-unknown-unknown
 
   lints:
     name: Lints
@@ -70,8 +78,8 @@ jobs:
       - name: Generate Schema
         uses: actions-rs/cargo@v1
         with:
-          command: schema
-          args: --locked
+          command: run
+          args: schema --locked
 
       - name: Schema Changes
         # fails if any changes not committed
