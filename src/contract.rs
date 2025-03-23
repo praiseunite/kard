@@ -1,12 +1,7 @@
 use crate::error::AuthError;
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
-use crate::state::{
-    GiftCard, GiftStage, RedeemedGift, Wallet, WalletVerification, EMAILS, EXPIRED_GIFTS, REDEEMED_GIFTS, UNCLAIMED_GIFTS, WALLETS
-};
-use cosmwasm_std::{
-    entry_point, to_json_binary, Addr, BankMsg, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo,
-    Response, StdError, StdResult, Uint128,
-};
+use crate::state::{GiftCard, GiftStage, RedeemedGift, Wallet, WalletVerification, EMAILS, EXPIRED_GIFTS, REDEEMED_GIFTS, UNCLAIMED_GIFTS, WALLETS};
+use cosmwasm_std::{entry_point, to_json_binary, Addr, BankMsg, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128};
 use sha2::{Digest, Sha256};
 // use crate::helpers::verify_signature;
 use crate::ContractError;
