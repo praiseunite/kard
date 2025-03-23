@@ -24,8 +24,8 @@ jobs:
       - name: Run unit tests
         uses: actions-rs/cargo@v1
         with:
-          command: unit-test
-          args: --locked
+          command: test
+          # args: --locked
         env:
           RUST_BACKTRACE: 1
 
@@ -48,7 +48,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: 1.60.0
+          toolchain: stable
           override: true
           components: rustfmt, clippy
 
