@@ -8,3 +8,37 @@
  │   ├── Cargo.toml           # Dependencies
  ├── schema/                  # Stores compiled schema files
  ├── tests/                   # Integration tests
+
+
+
+name: Basic
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps
+      uses: actions/checkout@v2
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+
+    - name: Update Cargo
+      run: rustup update stable
+
+    - name: Run unit tests
+      run: cargo unit-test --locked
+      env:
+        RUST_BACKTRACE: 1
