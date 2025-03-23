@@ -5,7 +5,6 @@ on: [push, pull_request]
 name: Basic
 
 jobs:
-
   test:
     name: Test Suite
     runs-on: ubuntu-latest
@@ -21,13 +20,7 @@ jobs:
           target: wasm32-unknown-unknown
           override: true
 
-      - name: Install WebAssembly target
-        run: rustup target add wasm32-unknown-unknown
-
-      - name: Set environment variables
-        run: echo "RUSTFLAGS=-C link-arg=-s" >> $GITHUB_ENV
-
-      - name: Run unit tests
+      - name: Run unit tests (native)
         uses: actions-rs/cargo@v1
         with:
           command: test
@@ -38,15 +31,9 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --target wasm32-unknown-unknown --release --locked
+          args: --lib --target wasm32-unknown-unknown --release
         env:
           RUSTFLAGS: "-C link-arg=-s"
-
-      - name: Build for WebAssembly
-        run: cargo build --target wasm32-unknown-unknown
-
-      - name: Run tests
-        run: cargo test --target wasm32-unknown-unknown
 
   lints:
     name: Lints
@@ -79,7 +66,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: schema --locked
+          args: --bin schema
 
       - name: Schema Changes
         # fails if any changes not committed
