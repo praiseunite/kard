@@ -1,6 +1,5 @@
 // use secp256k1::{Message, PublicKey, Secp256k1, ecdsa::Signature};
 use cosmwasm_std::{Addr, StdError, StdResult, Storage, Uint128};
-use sha2::Digest;
 
 // Use the existing storage mappings from the main contract
 use crate::state::{Wallet, EMAILS, WALLETS};

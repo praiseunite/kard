@@ -1,8 +1,7 @@
 use crate::error::AuthError;
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::state::{
-    GiftCard, GiftStage, RedeemedGift, Wallet, WalletVerification, EMAILS, REDEEMED_GIFTS,
-    UNCLAIMED_GIFTS, WALLETS,
+    GiftCard, GiftStage, RedeemedGift, Wallet, WalletVerification, EMAILS, EXPIRED_GIFTS, REDEEMED_GIFTS, UNCLAIMED_GIFTS, WALLETS
 };
 use cosmwasm_std::{
     entry_point, to_json_binary, Addr, BankMsg, Binary, CosmosMsg, Deps, DepsMut, Env, MessageInfo,
@@ -25,6 +24,7 @@ pub fn instantiate(
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
+#[allow(unused)]
 pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> StdResult<Response> {
     match msg {
         // Current incorrect usage:
@@ -178,6 +178,7 @@ pub fn get_wallet_by_email(deps: Deps, email: String) -> StdResult<Addr> {
 }
 
 /// Function to validate if a wallet exists
+#[allow(unused)]
 fn validate_wallet(deps: Deps, wallet_address: &Addr) -> StdResult<bool> {
     match WALLETS.may_load(deps.storage, wallet_address.clone())? {
         Some(_) => Ok(true),
@@ -225,6 +226,7 @@ pub fn create_gift_card(
 }
 
 // REDEEM GIFT CARD
+#[allow(unused)]
 pub fn redeem_gift_card(
     deps: DepsMut,
     env: Env,
@@ -240,6 +242,9 @@ pub fn redeem_gift_card(
 
     // Expiry Check
     if env.block.time.seconds() > gift_card.expiry() {
+        // Transfer the expired gift to the EXPIRED_GIFTS map
+        handle_expired_gift(deps, gift_id, gift_card)?;
+        
         return Err(ContractError::Std(StdError::generic_err(
             "Gift card expired",
         )));
@@ -285,6 +290,26 @@ pub fn redeem_gift_card(
         .add_attribute("recipient", recipient.to_string())
         .add_attribute("amount", gift_card.amount().to_string()))
 }
+
+// Add this function to contract.rs
+// Change from "pub" to "pub(crate)" to match GiftCard's visibility
+pub(crate) fn handle_expired_gift(
+    deps: DepsMut,
+    gift_id: &str,
+    mut gift_card: GiftCard
+) -> StdResult<()> {
+    // Mark as expired
+    gift_card.mark_expired();
+    
+    // Remove from unclaimed
+    UNCLAIMED_GIFTS.remove(deps.storage, gift_id.to_string());
+    
+    // Save to expired gifts
+    EXPIRED_GIFTS.save(deps.storage, gift_id.to_string(), &gift_card)?;
+    
+    Ok(())
+}
+
 
 /// Check if a wallet exists and return "Verified Wallet Address"
 pub fn validate_receiver_wallet(deps: Deps, wallet_address: Addr) -> StdResult<Binary> {

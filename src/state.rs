@@ -27,6 +27,7 @@ pub(crate) struct GiftCard {
     status: GiftStatus,
 }
 
+#[allow(unused)]
 impl GiftCard {
     pub(crate) fn new(name: String, sender: Addr, amount: u128, expiry: u64) -> Self {
         let gift_data = format!("{}:{}:{}", sender, amount, expiry);
@@ -81,6 +82,7 @@ pub(crate) struct RedeemedGift {
     stage: GiftStage,
 }
 
+#[allow(unused)]
 impl RedeemedGift {
     pub(crate) fn new(gift_card: GiftCard, stage: GiftStage) -> Self {
         Self { gift_card, stage }
@@ -137,6 +139,7 @@ pub(crate) struct WalletVerification {
     message: String,
 }
 
+#[allow(unused)]
 impl WalletVerification {
     pub(crate) fn new(message: String) -> Self {
         Self { message }

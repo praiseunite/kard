@@ -31,6 +31,7 @@ impl From<cosmwasm_std::StdError> for AuthError {
 }
 
 #[derive(Debug)]
+#[allow(unused)]
 pub enum DepositError {
     WalletNotFound {},
     Std(cosmwasm_std::StdError),
